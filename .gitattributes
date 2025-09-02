@@ -1,0 +1,24 @@
+# Handle line endings consistently
+* text=auto
+
+# Shell scripts should always use LF
+*.sh text eol=lf
+
+# Windows batch files should use CRLF
+*.bat text eol=crlf
+
+# Mark images and binaries as binary
+*.jar binary
+*.war binary
+*.class binary
+*.png binary
+*.jpg binary
+
+# Improve diff readability for source files
+*.java diff=java
+*.xml  diff=xml
+*.yml  diff=yaml
+*.json diff=json
+
+# Ignore docs in git archive
+docs/* export-ignore
