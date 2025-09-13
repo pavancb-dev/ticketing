@@ -1,0 +1,38 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../k8s-manifests
+namePrefix: inventoryservice-
+labels:
+  - includeSelectors: true
+    pairs:
+      app-name: inventoryservice
+      app-env: development
+replicas:
+  - count: 1
+    name: deploy
+images:
+  - name: registry/image:tag
+    newName: k3d-ticketing-registry:5000/inventoryservice
+    newTag: latest
+configMapGenerator:
+  - name: config-map
+    files:
+      - application.properties
+generatorOptions:
+  labels:
+    app-type: spring-boot
+patches:
+  - target:
+      kind: Deployment
+      name: deploy
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/name
+        value: inventoryservice
+      - op: replace
+        path: /spec/template/spec/containers/0/volumeMounts/0/name
+        value: inventoryservice-config-volume
+      - op: replace
+        path: /spec/template/spec/volumes/0/name
+        value: inventoryservice-config-volume

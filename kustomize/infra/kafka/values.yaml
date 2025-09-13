@@ -1,0 +1,31 @@
+controller:
+  replicaCount: 1
+  resourcesPreset: "small"
+  persistence:
+    enabled: true
+    size: 1Gi
+listeners:
+  client:
+    protocol: PLAINTEXT
+  interbroker:
+    protocol: PLAINTEXT
+  controller:
+    protocol: PLAINTEXT
+  external:
+    protocol: PLAINTEXT
+externalAccess:
+  enabled: true
+  controller:
+    forceExpose: false
+    service:
+      type: LoadBalancer
+      ports:
+        external: 9092
+      loadBalancerIPs:
+        - 127.0.0.1
+provisioning:
+  enabled: true
+  topics:
+    - name: booking
+      partitions: 3
+      replicationFactor: 1

@@ -1,0 +1,45 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../k8s-manifests
+namePrefix: apigateway-
+labels:
+- includeSelectors: true
+  pairs:
+    app-env: development
+    app-name: apigateway
+replicas:
+- count: 1
+  name: deploy
+images:
+  - name: registry/image:tag
+    newName: k3d-ticketing-registry:5000/apigateway
+    newTag: latest
+configMapGenerator:
+- files:
+  - application.properties
+  name: config-map
+generatorOptions:
+  labels:
+    app-type: spring-boot
+patches:
+- patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/name
+      value: apigateway
+    - op: replace
+      path: /spec/template/spec/containers/0/volumeMounts/0/name
+      value: apigateway-config-volume
+    - op: replace
+      path: /spec/template/spec/volumes/0/name
+      value: apigateway-config-volume
+  target:
+    kind: Deployment
+    name: deploy
+- patch: |-
+    - op: replace
+      path: /spec/type
+      value: LoadBalancer
+  target:
+    kind: Service
+    name: svc
