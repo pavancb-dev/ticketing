@@ -43,3 +43,6 @@ logs/
 ### Maven & Gradle ###
 .mvn/
 .gradle/
+
+### Kustomized pulled helm charts ###
+kustomize/**/charts/
